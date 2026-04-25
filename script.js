@@ -1,1 +1,56 @@
-//your JS code here. If required.
+const output = document.getElementById("output");
+
+
+function createPromise() {
+  return new Promise((resolve) => {
+    const time = Math.random() * 2 + 1; // 1 से 3 सेकंड
+
+    setTimeout(() => {
+      resolve(time);
+    }, time * 1000);
+  });
+}
+
+
+const p1 = createPromise();
+const p2 = createPromise();
+const p3 = createPromise();
+
+const start = performance.now();
+
+
+Promise.all([p1, p2, p3]).then((results) => {
+  const end = performance.now();
+  const totalTime = (end - start) / 1000;
+
+  
+  output.i
+  results.forEach((time, index) => {
+    const row = document.createElement("tr");
+
+    const col1 = document.createElement("td");
+    col1.textContent = `Promise ${index + 1}`;
+
+    const col2 = document.createElement("td");
+    col2.textContent = time.toFixed(3);
+
+    row.appendChild(col1);
+    row.appendChild(col2);
+
+    output.appendChild(row);
+  });
+
+  // Total row
+  const totalRow = document.createElement("tr");
+
+  const totalCol1 = document.createElement("td");
+  totalCol1.textContent = "Total";
+
+  const totalCol2 = document.createElement("td");
+  totalCol2.textContent = totalTime.toFixed(3);
+
+  totalRow.appendChild(totalCol1);
+  totalRow.appendChild(totalCol2);
+
+  output.appendChild(totalRow);
+});

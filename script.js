@@ -3,7 +3,7 @@ const output = document.getElementById("output");
 
 function createPromise() {
   return new Promise((resolve) => {
-    const time = Math.random() * 2 + 1; // 1 से 3 सेकंड
+    const time = Math.random() * 2 + 1; // 1–3 seconds
 
     setTimeout(() => {
       resolve(time);
@@ -16,16 +16,16 @@ const p1 = createPromise();
 const p2 = createPromise();
 const p3 = createPromise();
 
+// start time
 const start = performance.now();
 
 
-Promise.all([p1, p2, p3]).then((results) => {
-  const end = performance.now();
-  const totalTime = (end - start) / 1000;
+Promise.all([p1, p2, p3]).then((times) => {
+  
+  output.innerHTML = "";
 
   
-  output.i
-  results.forEach((time, index) => {
+  times.forEach((time, index) => {
     const row = document.createElement("tr");
 
     const col1 = document.createElement("td");
@@ -40,17 +40,19 @@ Promise.all([p1, p2, p3]).then((results) => {
     output.appendChild(row);
   });
 
-  // Total row
+  // total time (longest promise)
+  const totalTime = Math.max(...times);
+
   const totalRow = document.createElement("tr");
 
-  const totalCol1 = document.createElement("td");
-  totalCol1.textContent = "Total";
+  const col1 = document.createElement("td");
+  col1.textContent = "Total";
 
-  const totalCol2 = document.createElement("td");
-  totalCol2.textContent = totalTime.toFixed(3);
+  const col2 = document.createElement("td");
+  col2.textContent = totalTime.toFixed(3);
 
-  totalRow.appendChild(totalCol1);
-  totalRow.appendChild(totalCol2);
+  totalRow.appendChild(col1);
+  totalRow.appendChild(col2);
 
   output.appendChild(totalRow);
 });

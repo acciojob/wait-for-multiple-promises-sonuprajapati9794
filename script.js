@@ -1,58 +1,39 @@
 const output = document.getElementById("output");
 
+// Arrow function for creating promises
+const createPromise = () => new Promise((resolve) => {
+    const time = (Math.random() * 2) + 1; // Random time between 1 and 3 seconds
+    setTimeout(() => resolve(time), time * 1000);
+});
 
-function createPromise() {
-  return new Promise((resolve) => {
-    const time = Math.random() * 2 + 1; // 1–3 seconds
+// Using modern async/await syntax to handle the logic
+async function executePromises() {
+    // Generate an array of 3 promises
+    const promises = [createPromise(), createPromise(), createPromise()];
+    
+    const start = performance.now();
 
-    setTimeout(() => {
-      resolve(time);
-    }, time * 1000);
-  });
+    // Pause execution here until ALL promises in the array resolve
+    const results = await Promise.all(promises);
+    
+    const end = performance.now();
+    const totalTime = (end - start) / 1000;
+
+    // Clear the loading text
+    output.innerHTML = "";
+
+    // Iterate through the results using the cleaner Table API
+    results.forEach((time, index) => {
+        const row = output.insertRow();
+        row.insertCell(0).textContent = `Promise ${index + 1}`;
+        row.insertCell(1).textContent = time.toFixed(3);
+    });
+
+    // Add the final Total row
+    const totalRow = output.insertRow();
+    totalRow.insertCell(0).innerHTML = "<strong>Total</strong>";
+    totalRow.insertCell(1).innerHTML = `<strong>${totalTime.toFixed(3)}</strong>`;
 }
 
-
-const p1 = createPromise();
-const p2 = createPromise();
-const p3 = createPromise();
-
-// start time
-const start = performance.now();
-
-
-Promise.all([p1, p2, p3]).then((times) => {
-  
-  output.innerHTML = "";
-
-  
-  times.forEach((time, index) => {
-    const row = document.createElement("tr");
-
-    const col1 = document.createElement("td");
-    col1.textContent = `Promise ${index + 1}`;
-
-    const col2 = document.createElement("td");
-    col2.textContent = time.toFixed(3);
-
-    row.appendChild(col1);
-    row.appendChild(col2);
-
-    output.appendChild(row);
-  });
-
-  // total time (longest promise)
-  const totalTime = Math.max(...times);
-
-  const totalRow = document.createElement("tr");
-
-  const col1 = document.createElement("td");
-  col1.textContent = "Total";
-
-  const col2 = document.createElement("td");
-  col2.textContent = totalTime.toFixed(3);
-
-  totalRow.appendChild(col1);
-  totalRow.appendChild(col2);
-
-  output.appendChild(totalRow);
-});
+// Kick off the execution
+executePromises();
